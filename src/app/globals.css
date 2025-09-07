@@ -1,0 +1,358 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Professional Teal Color System - Based on #087998 */
+  /* Primary Teal Palette */
+  --teal-50: oklch(0.97 0.02 195);   /* Very light teal for backgrounds */
+  --teal-100: oklch(0.93 0.05 195);  /* Light teal for subtle elements */
+  --teal-200: oklch(0.86 0.08 195);  /* Medium light teal */
+  --teal-300: oklch(0.77 0.12 195);  /* Medium teal */
+  --teal-400: oklch(0.68 0.15 195);  /* Medium dark teal */
+  --teal-500: oklch(0.58 0.18 195);  /* Primary #087998 equivalent */
+  --teal-600: oklch(0.48 0.18 195);  /* Dark teal */
+  --teal-700: oklch(0.38 0.16 195);  /* Darker teal */
+  --teal-800: oklch(0.28 0.12 195);  /* Very dark teal */
+  --teal-900: oklch(0.18 0.08 195);  /* Deepest teal */
+
+  /* Complementary Colors */
+  --coral-400: oklch(0.72 0.15 25);  /* Warm coral for accents */
+  --coral-500: oklch(0.65 0.18 25);  /* Primary coral */
+  --amber-400: oklch(0.78 0.12 70);  /* Warm amber for highlights */
+
+  /* Main Color Variables */
+  --background: oklch(0.99 0.005 195);
+  --foreground: oklch(0.15 0.02 195);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.15 0.02 195);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.02 195);
+  --primary: var(--teal-600);         /* #087998 equivalent */
+  --primary-foreground: oklch(0.98 0.005 195);
+  --secondary: var(--teal-100);
+  --secondary-foreground: var(--teal-800);
+  --muted: var(--teal-50);
+  --muted-foreground: oklch(0.45 0.02 195);
+  --accent: var(--coral-500);         /* Warm coral accent */
+  --accent-foreground: oklch(0.98 0.005 195);
+  --destructive: oklch(0.65 0.20 15);
+  --destructive-foreground: oklch(0.98 0.005 195);
+  --border: var(--teal-200);
+  --input: var(--teal-100);
+  --ring: var(--teal-500);
+  --chart-1: var(--teal-500);
+  --chart-2: var(--coral-500);
+  --chart-3: var(--amber-400);
+  --chart-4: var(--teal-300);
+  --chart-5: var(--teal-700);
+  --radius: 0.75rem;
+  --sidebar: var(--teal-800);
+  --sidebar-foreground: oklch(0.98 0.005 195);
+  --sidebar-primary: var(--teal-500);
+  --sidebar-primary-foreground: oklch(0.98 0.005 195);
+  --sidebar-accent: var(--teal-600);
+  --sidebar-accent-foreground: oklch(0.98 0.005 195);
+  --sidebar-border: var(--teal-700);
+  --sidebar-ring: var(--teal-500);
+}
+
+.dark {
+  /* Professional Dark Mode with Teal Accent */
+  --background: oklch(0.06 0.01 195);
+  --foreground: oklch(0.95 0.005 195);
+  --card: oklch(0.08 0.02 195);
+  --card-foreground: oklch(0.95 0.005 195);
+  --popover: oklch(0.06 0.01 195);
+  --popover-foreground: oklch(0.95 0.005 195);
+  --primary: var(--teal-400);         /* Lighter teal for dark mode */
+  --primary-foreground: oklch(0.06 0.01 195);
+  --secondary: var(--teal-800);
+  --secondary-foreground: var(--teal-200);
+  --muted: var(--teal-900);
+  --muted-foreground: oklch(0.65 0.02 195);
+  --accent: var(--coral-400);         /* Bright coral for dark mode */
+  --accent-foreground: oklch(0.06 0.01 195);
+  --destructive: oklch(0.75 0.20 15);
+  --destructive-foreground: oklch(0.06 0.01 195);
+  --border: var(--teal-800);
+  --input: var(--teal-800);
+  --ring: var(--teal-400);
+  --chart-1: var(--teal-400);
+  --chart-2: var(--coral-400);
+  --chart-3: var(--amber-400);
+  --chart-4: var(--teal-300);
+  --chart-5: var(--teal-600);
+  --sidebar: var(--teal-900);
+  --sidebar-foreground: oklch(0.95 0.005 195);
+  --sidebar-primary: var(--teal-400);
+  --sidebar-primary-foreground: oklch(0.06 0.01 195);
+  --sidebar-accent: var(--teal-500);
+  --sidebar-accent-foreground: oklch(0.95 0.005 195);
+  --sidebar-border: var(--teal-800);
+  --sidebar-ring: var(--teal-400);
+}
+
+@theme inline {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --border-radius: var(--radius);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Improved button and interactive element styles */
+.btn-gradient {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  transition: all 0.3s ease;
+}
+
+.btn-gradient:hover {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+}
+
+/* Professional Gradient System */
+.gradient-primary {
+  background: linear-gradient(135deg, #087998, #0891a3, #14b8a6);
+}
+
+.gradient-primary-hover {
+  background: linear-gradient(135deg, #0891a3, #14b8a6, #22d3ee);
+}
+
+.gradient-secondary {
+  background: linear-gradient(135deg, #f0fdfa, #ccfbf1, #a7f3d0);
+}
+
+.gradient-accent {
+  background: linear-gradient(135deg, #fb7185, #f97316, #f59e0b);
+}
+
+.gradient-text-primary {
+  background: linear-gradient(135deg, #087998, #14b8a6, #22d3ee);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-accent {
+  background: linear-gradient(135deg, #fb7185, #f97316);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Enhanced Glass morphism with teal theme */
+.glass-teal {
+  background: rgba(8, 121, 152, 0.1);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(8, 121, 152, 0.2);
+}
+
+.glass-teal-strong {
+  background: rgba(8, 121, 152, 0.15);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(8, 121, 152, 0.3);
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar with teal theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: oklch(0.96 0.01 200);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #087998, #0891b2, #06b6d4);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #0e7490, #0891b2);
+}
+
+/* Focus styles for accessibility with teal theme */
+:focus-visible {
+  outline: 2px solid #087998;
+  outline-offset: 2px;
+}
+
+/* Teal gradient classes */
+.gradient-teal-primary {
+  background: linear-gradient(135deg, #087998, #0891b2, #06b6d4);
+}
+
+.gradient-teal-light {
+  background: linear-gradient(135deg, #0891b2, #06b6d4, #67e8f9);
+}
+
+.gradient-teal-dark {
+  background: linear-gradient(135deg, #164e63, #087998, #0891b2);
+}
+
+.gradient-teal-soft {
+  background: linear-gradient(135deg, rgba(8, 121, 152, 0.1), rgba(6, 182, 212, 0.1));
+}
+
+/* Text gradients */
+.text-gradient-teal {
+  background: linear-gradient(135deg, #087998, #0891b2, #06b6d4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-teal-bright {
+  background: linear-gradient(135deg, #0891b2, #06b6d4, #22d3ee);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Enhanced glassmorphism with teal */
+.glass-teal {
+  background: rgba(8, 121, 152, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(8, 121, 152, 0.2);
+}
+
+/* Enhanced hover effects */
+.hover-glow-teal:hover {
+  box-shadow: 0 10px 25px rgba(8, 121, 152, 0.3);
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+/* Enhanced product card animations */
+.product-card-hover {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Price animation */
+.price-pulse {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+  }
+}
+
+/* Badge animations */
+.badge-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+/* Line clamp utilities */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Screen reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
