@@ -1,6 +1,6 @@
 Write-Host "Starting Laravel Backend Server..." -ForegroundColor Green
 Write-Host ""
-Write-Host "This will start the Laravel backend at http://127.0.0.1:8000" -ForegroundColor Yellow
+Write-Host "This will start the Laravel backend at https://api.chooseyourcart.com" -ForegroundColor Yellow
 Write-Host ""
 
 # Check if we're in the right directory (look for Laravel files)

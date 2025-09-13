@@ -62,7 +62,7 @@ export default function CartPage() {
           </div>
           <h1 className="text-2xl font-bold mb-4">Your Cart is Empty</h1>
           <p className="text-muted-foreground mb-6">
-            Looks like you haven't added anything to your cart yet.
+            Looks like you haven&apos;t added anything to your cart yet.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button asChild className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
@@ -149,7 +149,7 @@ export default function CartPage() {
                         <div className="flex items-center gap-2">
                           {isOnSale ? (
                             <>
-                              <span className="text-lg font-bold text-green-600">
+                              <span className="text-lg font-bold text-black">
                                 Rs. {effectivePrice.toLocaleString()}
                               </span>
                               <span className="text-sm text-muted-foreground line-through">
@@ -157,7 +157,7 @@ export default function CartPage() {
                               </span>
                             </>
                           ) : (
-                            <span className="text-lg font-bold text-foreground">
+                            <span className="text-lg font-bold text-black">
                               Rs. {effectivePrice.toLocaleString()}
                             </span>
                           )}
@@ -196,7 +196,7 @@ export default function CartPage() {
                             </Button>
                           </div>
                           
-                          <div className="text-xl font-bold text-primary">
+                          <div className="text-xl font-bold text-black">
                             Rs. {itemTotal.toLocaleString()}
                           </div>
                         </div>
@@ -246,7 +246,7 @@ export default function CartPage() {
                     return (
                       <div key={item.product.id} className="flex justify-between text-sm">
                         <span className="line-clamp-1">{item.product.name} × {item.quantity}</span>
-                        <span className="font-medium">Rs. {itemTotal.toLocaleString()}</span>
+                        <span className="font-medium text-black">Rs. {itemTotal.toLocaleString()}</span>
                       </div>
                     );
                   })}
@@ -257,7 +257,7 @@ export default function CartPage() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span>Subtotal ({totalItems} items):</span>
-                    <span>Rs. {totalPrice.toLocaleString()}</span>
+                    <span className="text-black">Rs. {totalPrice.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping:</span>
@@ -265,7 +265,7 @@ export default function CartPage() {
                   </div>
                   <div className="flex justify-between font-bold text-lg border-t pt-2">
                     <span>Total:</span>
-                    <span className="text-primary">Rs. {totalPrice.toLocaleString()}</span>
+                    <span className="text-black">Rs. {totalPrice.toLocaleString()}</span>
                   </div>
                 </div>
 

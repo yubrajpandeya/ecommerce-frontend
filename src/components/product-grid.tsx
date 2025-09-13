@@ -100,7 +100,7 @@ export function ProductGrid({
                 <ShoppingCart className="h-10 w-10 text-muted-foreground" />
               </div>
               <h3 className="text-lg font-semibold text-foreground mb-2">No Products Found</h3>
-              <p className="text-muted-foreground">We're working on adding amazing products for you!</p>
+                      <p className="text-muted-foreground">Don&apos;t see what you&apos;re looking for? Try searching for something else.</p>
             </div>
           </div>
         </div>
@@ -177,6 +177,12 @@ export function ProductGrid({
                         fill
                         className="object-cover group-hover:scale-110 transition-transform duration-700"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                        onError={e => {
+                          const target = e.target as HTMLImageElement;
+                          if (target.src !== '/placeholder.svg') {
+                            target.src = '/placeholder.svg';
+                          }
+                        }}
                       />
 
                       {/* Quick View Overlay */}
@@ -226,7 +232,7 @@ export function ProductGrid({
                       <div className="flex items-center gap-2 flex-wrap">
                         {isOnSale ? (
                           <>
-                            <span className="text-lg lg:text-xl font-bold text-green-600 dark:text-green-400">
+                            <span className="text-lg lg:text-xl font-bold text-black">
                               Rs. {salePrice!.toLocaleString()}
                             </span>
                             <span className="text-sm text-muted-foreground line-through">
@@ -234,7 +240,7 @@ export function ProductGrid({
                             </span>
                           </>
                         ) : (
-                          <span className="text-lg lg:text-xl font-bold text-gradient-teal">
+                          <span className="text-lg lg:text-xl font-bold text-black">
                             Rs. {price.toLocaleString()}
                           </span>
                         )}

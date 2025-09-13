@@ -77,7 +77,7 @@ export function CategoryGrid() {
                 <Sparkles className="h-10 w-10 text-muted-foreground" />
               </div>
               <h3 className="text-lg font-semibold text-foreground mb-2">Categories Coming Soon</h3>
-              <p className="text-muted-foreground">We're organizing amazing categories for you!</p>
+              <p className="text-muted-foreground">We&apos;re organizing amazing categories for you!</p>
             </div>
           </div>
         </div>

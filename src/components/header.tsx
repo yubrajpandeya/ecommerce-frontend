@@ -97,7 +97,7 @@ export function Header() {
               <span className="hover:text-white cursor-pointer transition-colors">Store Locator</span>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-slate-400">Need help? Call 1-800-SHOP</span>
+              <span className="text-slate-400">Need help? Call +977 9803861618 </span>
             </div>
           </div>
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { api, Order, PaginatedResponse } from "@/lib/api";
 import Link from "next/link";
@@ -28,13 +28,7 @@ export default function OrdersPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
-  useEffect(() => {
-    if (isAuthenticated && token) {
-      fetchOrders();
-    }
-  }, [isAuthenticated, token]);
-
-  const fetchOrders = async (page: number = 1) => {
+  const fetchOrders = useCallback(async (page: number = 1) => {
     try {
       setLoading(true);
       const response = await api.getUserOrders(token!);
@@ -46,7 +40,13 @@ export default function OrdersPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    if (isAuthenticated && token) {
+      fetchOrders();
+    }
+  }, [isAuthenticated, token, fetchOrders]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -235,7 +235,7 @@ export default function OrdersPage() {
                         <p className="text-sm text-muted-foreground">
                           Quantity: {order.quantity} × Rs. {parseFloat(order.unit_price).toLocaleString()}
                         </p>
-                        <p className="text-lg font-bold text-accent mt-1">
+                        <p className="text-lg font-bold text-black mt-1">
                           Total: Rs. {parseFloat(order.total_amount).toLocaleString()}
                         </p>
                       </div>

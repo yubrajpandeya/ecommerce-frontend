@@ -261,7 +261,7 @@ export default function ProductDetailPage() {
                 {isOnSale ? (
                   <div className="space-y-2">
                     <div className="flex items-center gap-3 flex-wrap">
-                      <span className="text-3xl lg:text-4xl font-bold text-green-600 dark:text-green-400">
+                      <span className="text-3xl lg:text-4xl font-bold text-black">
                         Rs. {salePrice!.toLocaleString()}
                       </span>
                       <span className="text-xl text-muted-foreground line-through decoration-red-500 decoration-2">
@@ -273,7 +273,7 @@ export default function ProductDetailPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
+                  <div className="text-3xl lg:text-4xl font-bold text-black">
                     Rs. {price.toLocaleString()}
                   </div>
                 )}

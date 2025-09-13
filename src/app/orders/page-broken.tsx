@@ -3,13 +3,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Package, Eye, Loader2, MapPin, Phone, Search, Filter, Calendar } from "lucide-react";
+import { Package, Eye, Loader2, MapPin, Phone, Search, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { api, Order, PaginatedResponse } from "@/lib/api";
@@ -141,8 +140,14 @@ export default function OrdersPage() {
           <div className="h-1 w-20 gradient-primary rounded-full mt-4"></div>
         </div>
 
-        {/* Search and Filters */}
-                {/* Search and Filter */}
+        {/* Error Alert */}
+        {error && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
+        {/* Search and Filter */}
         <div className="mb-8 space-y-4">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
@@ -157,11 +162,12 @@ export default function OrdersPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 border rounded-md bg-background text-foreground"
+              className="px-3 py-2 border rounded-md bg-background text-foreground min-w-[150px]"
             >
-              <option value="">All Orders</option>
-              <option value="pending">Pending</option>
+              <option value="all">All Orders</option>
+              <option value="payment_verification">Payment Verification</option>
               <option value="confirmed">Confirmed</option>
+              <option value="processing">Processing</option>
               <option value="shipped">Shipped</option>
               <option value="delivered">Delivered</option>
               <option value="cancelled">Cancelled</option>
@@ -247,145 +253,6 @@ export default function OrdersPage() {
                           Total: Rs. {parseFloat(order.total_amount).toLocaleString()}
                         </p>
                       </div>
-                      
-                      <div className="flex flex-col sm:flex-row gap-3">
-                        <Button variant="outline" size="sm" asChild>
-                          <Link href={`/orders/${order.id}`}>
-                            <Eye className="h-4 w-4 mr-2" />
-                            View Details
-                          </Link>
-                        </Button>
-                        {order.status === "confirmed" && (
-                          <Button variant="outline" size="sm" disabled>
-                            Preparing Order
-                          </Button>
-                        )}
-                        {order.status === "shipped" && (
-                          <Button variant="outline" size="sm" disabled>
-                            On the Way
-                          </Button>
-                        )}
-                        {order.status === "delivered" && (
-                          <Button variant="outline" size="sm" disabled>
-                            Delivered
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-
-            {/* Pagination */}
-            {pagination && pagination.last_page > 1 && (
-              <div className="flex justify-center gap-2 mt-8">
-                <Button
-                  variant="outline"
-                  disabled={pagination.current_page === 1}
-                  onClick={() => fetchOrders(pagination.current_page - 1)}
-                >
-                  Previous
-                </Button>
-                <span className="flex items-center px-4 py-2 text-sm">
-                  Page {pagination.current_page} of {pagination.last_page}
-                </span>
-                <Button
-                  variant="outline"
-                  disabled={pagination.current_page === pagination.last_page}
-                  onClick={() => fetchOrders(pagination.current_page + 1)}
-                >
-                  Next
-                </Button>
-              </div>
-            )}
-          </div>
-        )}
-
-        {error && (
-          <Alert variant="destructive" className="mb-6">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-
-        {filteredOrders.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="max-w-md mx-auto">
-              <div className="w-24 h-24 bg-gradient-to-br from-muted to-muted/50 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Package className="h-12 w-12 text-muted-foreground" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">
-                {orders.length === 0 ? "No orders yet" : "No matching orders"}
-              </h3>
-              <p className="text-muted-foreground mb-6">
-                {orders.length === 0 
-                  ? "When you place your first order, it will appear here."
-                  : "Try adjusting your search or filter criteria."
-                }
-              </p>
-              {orders.length === 0 && (
-                <Button asChild className="gradient-primary">
-                  <Link href="/">Start Shopping</Link>
-                </Button>
-              )}
-            </div>
-          </div>
-        ) : (
-          <>
-            {/* Orders Count */}
-            <div className="mb-6">
-              <p className="text-sm text-muted-foreground">
-                Showing {filteredOrders.length} of {orders.length} orders
-              </p>
-            </div>
-
-            {/* Orders List */}
-            <div className="space-y-6">
-              {filteredOrders.map((order) => (
-                <Card key={order.id} className="overflow-hidden border-0 shadow-lg bg-gradient-to-br from-background/90 to-muted/20 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
-                  <CardHeader className="pb-4 bg-gradient-to-r from-muted/30 to-muted/10">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <div>
-                        <CardTitle className="text-lg mb-1">Order #{order.id}</CardTitle>
-                        <p className="text-sm text-muted-foreground flex items-center gap-2">
-                          <Calendar className="h-4 w-4" />
-                          Placed on {new Date(order.created_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <Badge
-                        className={`${getStatusColor(order.status)} text-white px-3 py-1`}
-                      >
-                        {formatStatus(order.status)}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-col lg:flex-row gap-6">
-                      {/* Product Image */}
-                      <div className="flex-shrink-0">
-                        <div className="relative w-24 h-24 rounded-lg overflow-hidden">
-                          <Image
-                            src={order.product_image}
-                            alt={order.product_name}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Order Details */}
-                      <div className="flex-1 space-y-3">
-                        <div>
-                          <h4 className="font-semibold text-lg">
-                            {order.product_name}
-                          </h4>
-                          <p className="text-sm text-muted-foreground">
-                            Quantity: {order.quantity} × Rs. {parseFloat(order.unit_price).toLocaleString()}
-                          </p>
-                          <p className="text-lg font-bold text-accent mt-1">
-                            Total: Rs. {parseFloat(order.total_amount).toLocaleString()}
-                        </p>
-                      </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div className="flex items-start gap-2">
@@ -419,9 +286,16 @@ export default function OrdersPage() {
                       )}
 
                       {/* Action Buttons */}
-                      <div className="flex gap-2 pt-2">
-                        {(order.status === "pending" ||
-                          order.status === "payment_verification") && (
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <Button variant="outline" size="sm" asChild>
+                          <Link href={`/orders/${order.id}`}>
+                            <Eye className="h-4 w-4 mr-2" />
+                            View Details
+                          </Link>
+                        </Button>
+                        
+                        {/* Status-specific buttons */}
+                        {(order.status === "payment_verification") && (
                           <Button
                             variant="destructive"
                             size="sm"
@@ -442,7 +316,7 @@ export default function OrdersPage() {
                         )}
                         {order.status === "shipped" && (
                           <Button variant="outline" size="sm" disabled>
-                            Shipped
+                            On the Way
                           </Button>
                         )}
                         {order.status === "delivered" && (
@@ -467,7 +341,7 @@ export default function OrdersPage() {
                 >
                   Previous
                 </Button>
-                <span className="flex items-center px-4">
+                <span className="flex items-center px-4 py-2 text-sm">
                   Page {pagination.current_page} of {pagination.last_page}
                 </span>
                 <Button

@@ -1,7 +1,7 @@
 @echo off
 echo Starting Laravel Backend Server...
 echo.
-echo This will start the Laravel backend at http://127.0.0.1:8000
+echo This will start the Laravel backend at https://api.chooseyourcart.com
 echo.
 
 REM Check if we're in the right directory (look for Laravel files)

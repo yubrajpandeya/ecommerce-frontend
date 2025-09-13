@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import {
@@ -46,7 +46,7 @@ interface BillingFormData {
   notes: string;
 }
 
-export default function CheckoutPage() {
+function CheckoutPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const productId = searchParams.get("product");
@@ -158,7 +158,7 @@ export default function CheckoutPage() {
       }
 
       const item = checkoutItems[0];
-      
+
       // Handle payment screenshot requirement
       let screenshot = paymentScreenshot;
       if (!screenshot && paymentMethod !== "cod") {
@@ -166,7 +166,7 @@ export default function CheckoutPage() {
         setIsProcessing(false);
         return;
       }
-      
+
       // Create a minimal file for COD orders to satisfy backend validation
       if (!screenshot) {
         const emptyBlob = new Blob([""], { type: "text/plain" });
@@ -199,27 +199,32 @@ export default function CheckoutPage() {
         console.log("Order created successfully:", response);
         setOrderId(response.order.id.toString());
         setOrderCompleted(true);
-        
+
         // Clear cart items that were ordered (but after setting order completed)
         if (!productId) {
           clearCart();
         }
-        
+
         setCurrentStep("confirmation");
-      } catch (apiError) {
-        console.error("API Error details:", apiError);
-        console.error("Error creating order with data:", {
-          product_id: orderData.product_id,
-          quantity: orderData.quantity,
-          payment_method: orderData.payment_method,
-          has_screenshot: !!orderData.payment_screenshot,
-          screenshot_name: orderData.payment_screenshot?.name,
-          screenshot_size: orderData.payment_screenshot?.size
-        });
-        throw apiError;
+      } catch (apiError: unknown) {
+        // Try to show detailed backend validation errors if present
+        if (apiError instanceof Error) {
+          setError(apiError.message);
+        } else if (typeof apiError === 'string') {
+          setError(apiError);
+        } else {
+          setError("Failed to create order (unknown error)");
+        }
+        return;
       }
-    } catch (error) {
-      setError(error instanceof Error ? error.message : "Failed to create order");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else if (typeof error === 'string') {
+        setError(error);
+      } else {
+        setError("Failed to create order");
+      }
     } finally {
       setIsProcessing(false);
     }
@@ -637,7 +642,7 @@ export default function CheckoutPage() {
                         <div className="flex items-center gap-2 mt-1">
                           {isOnSale ? (
                             <>
-                              <span className="text-sm font-semibold text-green-600">
+                              <span className="text-sm font-semibold text-black">
                                 Rs. {effectivePrice.toLocaleString()}
                               </span>
                               <span className="text-xs text-muted-foreground line-through">
@@ -645,14 +650,14 @@ export default function CheckoutPage() {
                               </span>
                             </>
                           ) : (
-                            <span className="text-sm font-semibold">
+                            <span className="text-sm font-semibold text-black">
                               Rs. {effectivePrice.toLocaleString()}
                             </span>
                           )}
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-medium">
+                        <div className="font-medium text-black">
                           Rs. {getItemTotal(item).toLocaleString()}
                         </div>
                       </div>
@@ -665,7 +670,7 @@ export default function CheckoutPage() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span>Subtotal:</span>
-                    <span>Rs. {checkoutTotal.toLocaleString()}</span>
+                    <span className="text-black">Rs. {checkoutTotal.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping:</span>
@@ -673,7 +678,7 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex justify-between font-bold text-lg border-t pt-2">
                     <span>Total:</span>
-                    <span className="text-primary">Rs. {checkoutTotal.toLocaleString()}</span>
+                    <span className="text-black">Rs. {checkoutTotal.toLocaleString()}</span>
                   </div>
                 </div>
               </CardContent>
@@ -682,5 +687,13 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CheckoutPageInner />
+    </Suspense>
   );
 }

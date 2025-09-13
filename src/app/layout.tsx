@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ecommerce App",
+  title: "Choose Your Cart",
   description: "Ecommerce",
 };
 

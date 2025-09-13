@@ -3,7 +3,7 @@ import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="bg-primary text-primary-foreground">
+    <footer className="bg-gradient-to-r from-slate-900 via-[#087998] to-cyan-900 text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Customer Service */}
@@ -117,7 +117,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-sm">
+        <div className="border-t border-slate-700/30 mt-8 pt-8 text-center text-sm">
           <p>
             &copy; {new Date().getFullYear()} ChooseYourCart. All Rights
             Reserved.
