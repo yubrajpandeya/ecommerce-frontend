@@ -235,8 +235,8 @@ export function Header() {
                 className="relative h-10 w-10 md:h-12 md:w-12 object-contain rounded-xl"
               />
             </div>
-            <div className="hidden sm:block">
-              <h1 className="text-xl md:text-2xl font-bold text-gradient-teal-bright">
+            <div>
+              <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gradient-teal-bright">
                 Choose Your Cart
               </h1>
               <p className="text-xs text-slate-400 hidden md:block">Premium Shopping Experience</p>

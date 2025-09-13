@@ -5,6 +5,7 @@ import { AuthProvider } from "@/lib/auth-context";
 import { CartProvider } from "@/lib/cart-context";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { AnnouncementPopup } from "@/components/announcement-popup";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +38,7 @@ export default function RootLayout({
               <Header />
               <main>{children}</main>
               <Footer />
+              <AnnouncementPopup />
             </div>
           </CartProvider>
         </AuthProvider>
