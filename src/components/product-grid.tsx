@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ShoppingCart, Eye, Heart, Star, Zap } from "lucide-react";
 import { api, Product } from "@/lib/api";
 import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
 import { cn, fixImageUrl } from "@/lib/utils";
 
 type ProductType = "featured" | "upcoming" | "all";
@@ -28,6 +29,7 @@ export function ProductGrid({
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const { addToCart, isInCart } = useCart();
+  const { addToWishlist, isInWishlist } = useWishlist();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -138,8 +140,12 @@ export function ProductGrid({
                   size="sm"
                   variant="ghost"
                   className="absolute top-2 right-2 z-20 w-8 h-8 p-0 bg-background/80 hover:bg-background backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    addToWishlist(product);
+                  }}
                 >
-                  <Heart className="h-4 w-4 text-muted-foreground hover:text-red-500 transition-colors" />
+                  <Heart className={`h-4 w-4 transition-colors ${isInWishlist(product.id) ? 'fill-red-500 text-red-500' : 'text-muted-foreground hover:text-red-500'}`} />
                 </Button>
 
                 <CardContent className="p-3 lg:p-4">

@@ -122,6 +122,17 @@ export function Footer() {
             &copy; {new Date().getFullYear()} ChooseYourCart. All Rights
             Reserved.
           </p>
+          <p className="mt-2">
+            Made with ❤️ by{" "}
+            <Link
+              href="https://yubrajpandeya.com.np"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-cyan-300 hover:text-cyan-200 transition-colors underline"
+            >
+              Yubraj Pandeya
+            </Link>
+          </p>
         </div>
       </div>
     </footer>

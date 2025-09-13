@@ -9,8 +9,7 @@ import {
   Calendar, 
   Package, 
   Eye, 
-  Search,
-  ArrowLeft 
+  Search 
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,7 +27,7 @@ export default function OrdersPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
-  const fetchOrders = useCallback(async (page: number = 1) => {
+  const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
       const response = await api.getUserOrders(token!);
@@ -275,7 +274,7 @@ export default function OrdersPage() {
                 <Button
                   variant="outline"
                   disabled={pagination.current_page === 1}
-                  onClick={() => fetchOrders(pagination.current_page - 1)}
+                  onClick={() => fetchOrders()}
                 >
                   Previous
                 </Button>
@@ -285,7 +284,7 @@ export default function OrdersPage() {
                 <Button
                   variant="outline"
                   disabled={pagination.current_page === pagination.last_page}
-                  onClick={() => fetchOrders(pagination.current_page + 1)}
+                  onClick={() => fetchOrders()}
                 >
                   Next
                 </Button>

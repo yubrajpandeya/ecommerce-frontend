@@ -11,20 +11,10 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { api, Product, PaginatedResponse } from "@/lib/api";
-import { useCart, getEffectivePrice, isProductOnSale } from "@/lib/cart-context";
+import { useCart, isProductOnSale } from "@/lib/cart-context";
 import { useAuth } from "@/lib/auth-context";
 import { fixImageUrl } from "@/lib/utils";
 import { cn } from "@/lib/utils";
-
-const getStockStatus = (stock: number) => {
-  if (stock === 0) return { text: "Out of Stock", color: "bg-red-500" };
-  if (stock <= 5) return { text: "Low Stock", color: "bg-yellow-500" };
-  return { text: "In Stock", color: "bg-green-500" };
-};
-
-const formatPrice = (price: string) => {
-  return `Rs. ${parseFloat(price).toLocaleString()}`;
-};
 
 export default function SearchContent() {
   const searchParams = useSearchParams();

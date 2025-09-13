@@ -489,7 +489,8 @@ export const api = {
       formData.append("notes", data.notes);
     }
 
-    if (data.payment_screenshot) {
+    // Only append payment_screenshot if it's not a COD order or if it's a real file
+    if (data.payment_screenshot && (data.payment_method !== "cod" || data.payment_screenshot.size > 0)) {
       formData.append("payment_screenshot", data.payment_screenshot);
     }
 

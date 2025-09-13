@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -11,7 +11,6 @@ import {
   LogOut,
   Settings,
   Package,
-  User2Icon,
   X,
   Heart,
   Bell,
@@ -30,13 +29,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { api, Category } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
 import Image from "next/image";
 
 const navigationItems = [
   { name: "Home", href: "/" },
+  { name: "Fashion", href: "/category/fashion" },
+  { name: "Electronics", href: "/category/electronics" },
+  { name: "Furniture", href: "/category/furniture" },
+  { name: "Stationary", href: "/category/stationary" },
   { name: "About", href: "/about" },
 ];
 
@@ -44,22 +47,10 @@ export function Header() {
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuth();
   const { totalItems } = useCart();
-  const [categories, setCategories] = useState<Category[]>([]);
+  const { wishlistCount } = useWishlist();
   const [isOpen, setIsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const data = await api.getCategories();
-        setCategories(data);
-      } catch (error) {
-        console.error("Failed to fetch categories:", error);
-      }
-    };
-    fetchCategories();
-  }, []);
 
   const handleSearch = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -71,22 +62,17 @@ export function Header() {
 
   return (
     <header className="bg-gradient-to-r from-slate-900 via-[#087998] to-cyan-900 text-white sticky top-0 z-50 shadow-2xl backdrop-blur-sm border-b border-cyan-800/50 hover-glow-teal">
-      {/* Top announcement bar */}
-      <div className="bg-gradient-to-r from-[#087998] to-cyan-600 text-white py-2 px-4 text-center text-sm font-medium">
-        <div className="container mx-auto">
-          🎉 Free shipping on orders over Rs. 5000 | Use code: FREESHIP50
-        </div>
-      </div>
+    
 
       {/* Top utility bar */}
       <div className="border-b border-slate-700/30 hidden lg:block bg-slate-800/50">
         <div className="container mx-auto px-4 py-2">
           <div className="flex items-center justify-between text-sm text-slate-300">
             <div className="flex items-center gap-6">
-              <span className="hover:text-white cursor-pointer transition-colors flex items-center gap-1">
+              <Link href="/track-order" className="hover:text-white cursor-pointer transition-colors flex items-center gap-1">
                 <MapPin className="h-3 w-3" />
                 Track Order
-              </span>
+              </Link>
               <span className="hover:text-white cursor-pointer transition-colors flex items-center gap-1">
                 <Phone className="h-3 w-3" />
                 Customer Service
@@ -114,39 +100,51 @@ export function Header() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-80 bg-slate-900 border-slate-700">
+            <SheetContent 
+              side="left" 
+              className="w-80 bg-white border-slate-200 flex flex-col h-full max-h-screen"
+            >
               <SheetTitle className="sr-only">Mobile Navigation Menu</SheetTitle>
-              <div className="flex flex-col gap-6 mt-8">
+              <div className="flex-1 overflow-y-auto overscroll-contain">
+                <div className="flex flex-col gap-6 mt-8 pb-6 px-1 ml-1.5">
                 {/* Mobile user section */}
-                <div className="flex flex-col gap-3 pb-6 border-b border-slate-700">
+                <div className="flex flex-col gap-3 pb-6 border-b border-slate-200">
                   {isAuthenticated ? (
                     <>
-                      <div className="flex items-center gap-3 p-3 bg-slate-800 rounded-xl">
+                      <div className="flex items-center gap-3 p-3 bg-slate-100 rounded-xl">
                         <Avatar className="h-10 w-10 border-2 border-blue-500">
                           <AvatarFallback className="gradient-teal-primary text-white font-semibold">
                             {user?.name?.charAt(0)?.toUpperCase() || "U"}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="font-semibold text-white">{user?.name}</p>
-                          <p className="text-xs text-slate-400">Premium Member</p>
+                          <p className="font-semibold text-slate-900">{user?.name}</p>
+                          <p className="text-xs text-slate-600">Premium Member</p>
                         </div>
                       </div>
                       <Link
                         href="/profile"
-                        className="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl transition-colors group"
+                        className="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl transition-colors group"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        <Settings className="h-5 w-5 text-slate-400 group-hover:text-blue-400" />
-                        <span className="text-white group-hover:text-blue-400">Profile Settings</span>
+                        <Settings className="h-5 w-5 text-slate-600 group-hover:text-blue-600" />
+                        <span className="text-slate-900 group-hover:text-blue-600">Profile Settings</span>
+                      </Link>
+                      <Link
+                        href="/orders"
+                        className="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl transition-colors group"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <Package className="h-5 w-5 text-slate-600 group-hover:text-blue-600" />
+                        <span className="text-slate-900 group-hover:text-blue-600">My Orders</span>
                       </Link>
                       <Link
                         href="/cart"
-                        className="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl transition-colors group"
+                        className="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl transition-colors group"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        <ShoppingCart className="h-5 w-5 text-slate-400 group-hover:text-blue-400" />
-                        <span className="text-white group-hover:text-blue-400">Shopping Cart</span>
+                        <ShoppingCart className="h-5 w-5 text-slate-600 group-hover:text-blue-600" />
+                        <span className="text-slate-900 group-hover:text-blue-600">Shopping Cart</span>
                         {totalItems > 0 && (
                           <Badge className="ml-auto gradient-teal-primary">
                             {totalItems}
@@ -159,25 +157,25 @@ export function Header() {
                           setIsMobileMenuOpen(false);
                           router.push("/");
                         }}
-                        className="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl transition-colors group w-full text-left"
+                        className="flex items-center gap-3 p-3 hover:bg-red-50 rounded-xl transition-colors group w-full text-left"
                       >
-                        <LogOut className="h-5 w-5 text-slate-400 group-hover:text-red-400" />
-                        <span className="text-white group-hover:text-red-400">Sign Out</span>
+                        <LogOut className="h-5 w-5 text-slate-600 group-hover:text-red-600" />
+                        <span className="text-slate-900 group-hover:text-red-600">Sign Out</span>
                       </button>
                     </>
                   ) : (
                     <>
                       <Link
                         href="/login"
-                        className="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl transition-colors group"
+                        className="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl transition-colors group"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        <User className="h-5 w-5 text-slate-400 group-hover:text-blue-400" />
-                        <span className="text-white group-hover:text-blue-400">Sign In</span>
+                        <User className="h-5 w-5 text-slate-600 group-hover:text-blue-600" />
+                        <span className="text-slate-900 group-hover:text-blue-600">Sign In</span>
                       </Link>
                       <Link
                         href="/register"
-                        className="flex items-center gap-3 p-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl transition-colors"
+                        className="flex items-center gap-3 p-3 bg-gradient-to-r from-slate-900 via-[#087998] to-cyan-900 rounded-xl transition-colors"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         <User className="h-5 w-5 text-white" />
@@ -189,32 +187,18 @@ export function Header() {
 
                 {/* Mobile navigation */}
                 <div className="flex flex-col gap-2">
-                  <h3 className="font-semibold text-sm text-slate-400 mb-3 uppercase tracking-wider">Navigation</h3>
+                  <h3 className="font-semibold text-sm text-slate-600 mb-3 uppercase tracking-wider">Navigation</h3>
                   {navigationItems.map((item) => (
                     <Link
                       key={item.name}
                       href={item.href}
-                      className="p-3 hover:bg-slate-800 rounded-xl font-medium text-white hover:text-blue-400 transition-colors"
+                      className="p-3 hover:bg-slate-50 rounded-xl font-medium text-slate-900 hover:text-blue-600 transition-colors"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {item.name}
                     </Link>
                   ))}
                 </div>
-
-                {/* Mobile categories */}
-                <div className="flex flex-col gap-2 pt-4 border-t border-slate-700">
-                  <h3 className="font-semibold text-sm text-slate-400 mb-3 uppercase tracking-wider">Categories</h3>
-                  {categories.slice(0, 6).map((category) => (
-                    <Link
-                      key={category.id}
-                      href={`/category/${category.slug}`}
-                      className="p-3 hover:bg-slate-800 rounded-xl text-white hover:text-blue-400 transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {category.name}
-                    </Link>
-                  ))}
                 </div>
               </div>
             </SheetContent>
@@ -266,17 +250,21 @@ export function Header() {
           {/* Desktop actions */}
           <div className="hidden lg:flex items-center gap-3">
             {/* Wishlist */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-white hover:bg-white/10 border border-slate-600 rounded-xl px-4 relative"
-            >
-              <Heart className="h-4 w-4 mr-2" />
-              <span className="hidden xl:inline">Wishlist</span>
-              <Badge className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 py-0.5">
-                3
-              </Badge>
-            </Button>
+            <Link href="/wishlist">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-white hover:bg-white/10 border border-slate-600 rounded-xl px-4 relative"
+              >
+                <Heart className="h-4 w-4 mr-2" />
+                <span className="hidden xl:inline">Wishlist</span>
+                {wishlistCount > 0 && (
+                  <Badge className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 py-0.5">
+                    {wishlistCount}
+                  </Badge>
+                )}
+              </Button>
+            </Link>
 
             {/* Cart */}
             <Link href="/cart">
@@ -437,16 +425,6 @@ export function Header() {
                 className="text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 px-4 py-2 rounded-xl transition-all duration-200 whitespace-nowrap relative group"
               >
                 {item.name}
-                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 group-hover:w-full transition-all duration-200"></span>
-              </Link>
-            ))}
-            {categories.slice(0, 6).map((category) => (
-              <Link
-                key={category.id}
-                href={`/category/${category.slug}`}
-                className="text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 px-4 py-2 rounded-xl transition-all duration-200 whitespace-nowrap relative group"
-              >
-                {category.name}
                 <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 group-hover:w-full transition-all duration-200"></span>
               </Link>
             ))}

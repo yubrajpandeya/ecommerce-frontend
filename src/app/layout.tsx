@@ -3,9 +3,11 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 import { CartProvider } from "@/lib/cart-context";
+import { WishlistProvider } from "@/lib/wishlist-context";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { AnnouncementPopup } from "@/components/announcement-popup";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,12 +36,15 @@ export default function RootLayout({
       >
         <AuthProvider>
           <CartProvider>
-            <div className="min-h-screen bg-background">
-              <Header />
-              <main>{children}</main>
-              <Footer />
-              <AnnouncementPopup />
-            </div>
+            <WishlistProvider>
+              <div className="min-h-screen bg-background">
+                <Header />
+                <main>{children}</main>
+                <Footer />
+                <AnnouncementPopup />
+                <Toaster />
+              </div>
+            </WishlistProvider>
           </CartProvider>
         </AuthProvider>
       </body>

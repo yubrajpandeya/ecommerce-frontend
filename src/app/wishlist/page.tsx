@@ -15,85 +15,24 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCart, getEffectivePrice, isProductOnSale } from "@/lib/cart-context";
+import { useCart, isProductOnSale } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
 import { Product } from "@/lib/api";
 import { cn, fixImageUrl } from "@/lib/utils";
-
-// Mock wishlist data - in a real app, this would come from an API
-const mockWishlistItems: Product[] = [
-  {
-    id: 1,
-    category_id: 1,
-    name: "Wireless Bluetooth Headphones",
-    slug: "wireless-bluetooth-headphones",
-    description: "High-quality wireless headphones with noise cancellation",
-    price: "4999",
-    sale_price: "3999",
-    stock: 10,
-    is_featured: true,
-    is_upcoming: false,
-    available_from: null,
-    image_url: "/wireless-bluetooth-headphones-yellow-background.png",
-    rating: 4.5,
-    reviews_count: 128,
-    category: { id: 1, name: "Electronics", slug: "electronics" }
-  },
-  {
-    id: 2,
-    category_id: 2,
-    name: "Elegant Brown Leather Handbag",
-    slug: "elegant-brown-leather-handbag",
-    description: "Premium quality leather handbag perfect for any occasion",
-    price: "7999",
-    stock: 5,
-    is_featured: false,
-    is_upcoming: false,
-    available_from: null,
-    image_url: "/womens-leather-handbag-brown-elegant.png",
-    rating: 4.8,
-    reviews_count: 95,
-    category: { id: 2, name: "Fashion", slug: "fashion" }
-  },
-  {
-    id: 3,
-    category_id: 3,
-    name: "Smart Fitness Tracker Watch",
-    slug: "smart-fitness-tracker-watch",
-    description: "Advanced fitness tracking with heart rate monitoring",
-    price: "12999",
-    sale_price: "9999",
-    stock: 0,
-    is_featured: true,
-    is_upcoming: false,
-    available_from: null,
-    image_url: "/smart-watch-fitness-tracker-white-background.png",
-    rating: 4.3,
-    reviews_count: 76,
-    category: { id: 3, name: "Fitness", slug: "fitness" }
-  }
-];
 
 export default function WishlistPage() {
   const { isAuthenticated } = useAuth();
   const { addToCart, isInCart } = useCart();
-  const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
+  const { wishlistItems, removeFromWishlist, clearWishlist } = useWishlist();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading and fetching wishlist data
+    // Simulate loading
     const timer = setTimeout(() => {
-      if (isAuthenticated) {
-        setWishlistItems(mockWishlistItems);
-      }
       setLoading(false);
-    }, 1000);
-
+    }, 500);
     return () => clearTimeout(timer);
-  }, [isAuthenticated]);
-
-  const removeFromWishlist = (productId: number) => {
-    setWishlistItems(items => items.filter(item => item.id !== productId));
-  };
+  }, []);
 
   const addToCartFromWishlist = (product: Product) => {
     addToCart(product, 1);
@@ -193,7 +132,6 @@ export default function WishlistPage() {
               const price = parseFloat(product.price);
               const salePrice = product.sale_price ? parseFloat(product.sale_price) : null;
               const isOnSale = isProductOnSale(product);
-              const effectivePrice = getEffectivePrice(product);
               const discountPercentage = isOnSale ? Math.round(((price - salePrice!) / price) * 100) : 0;
               const isOutOfStock = product.stock === 0;
 

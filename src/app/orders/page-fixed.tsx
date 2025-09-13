@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { api, Order, PaginatedResponse } from "@/lib/api";
 import Link from "next/link";
@@ -9,8 +9,7 @@ import {
   Calendar, 
   Package, 
   Eye, 
-  Search,
-  ArrowLeft 
+  Search 
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,13 +27,7 @@ export default function OrdersPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
-  useEffect(() => {
-    if (isAuthenticated && token) {
-      fetchOrders();
-    }
-  }, [isAuthenticated, token]);
-
-  const fetchOrders = async (page: number = 1) => {
+  const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
       const response = await api.getUserOrders(token!);
@@ -46,7 +39,13 @@ export default function OrdersPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    if (isAuthenticated && token) {
+      fetchOrders();
+    }
+  }, [isAuthenticated, token, fetchOrders]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -275,7 +274,7 @@ export default function OrdersPage() {
                 <Button
                   variant="outline"
                   disabled={pagination.current_page === 1}
-                  onClick={() => fetchOrders(pagination.current_page - 1)}
+                  onClick={() => fetchOrders()}
                 >
                   Previous
                 </Button>
@@ -285,7 +284,7 @@ export default function OrdersPage() {
                 <Button
                   variant="outline"
                   disabled={pagination.current_page === pagination.last_page}
-                  onClick={() => fetchOrders(pagination.current_page + 1)}
+                  onClick={() => fetchOrders()}
                 >
                   Next
                 </Button>

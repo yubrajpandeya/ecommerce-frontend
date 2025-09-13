@@ -11,15 +11,65 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import Link from "next/link";
 import { api, ProductDetail } from "@/lib/api";
 import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
 import { cn, fixImageUrl } from "@/lib/utils";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function ProductDetailPage() {
   const params = useParams();
   const { addToCart, isInCart } = useCart();
+  const { addToWishlist, isInWishlist } = useWishlist();
+  const { toast } = useToast();
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
   const [selectedImage, setSelectedImage] = useState<string>("");
+
+  // Handle product sharing
+  const handleShare = async () => {
+    if (!product) return;
+
+    const shareData = {
+      title: product.name,
+      text: `Check out this amazing product: ${product.name}`,
+      url: window.location.href,
+    };
+
+    try {
+      // Check if Web Share API is supported
+      if (navigator.share) {
+        await navigator.share(shareData);
+        toast({
+          title: "Shared successfully!",
+          description: "Product has been shared.",
+        });
+      } else {
+        // Fallback: Copy to clipboard
+        await navigator.clipboard.writeText(window.location.href);
+        toast({
+          title: "Link copied!",
+          description: "Product link has been copied to your clipboard.",
+        });
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+      // Fallback: Copy to clipboard
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        toast({
+          title: "Link copied!",
+          description: "Product link has been copied to your clipboard.",
+        });
+      } catch (clipboardError) {
+        console.error('Clipboard error:', clipboardError);
+        toast({
+          title: "Share failed",
+          description: "Unable to share. Please copy the URL manually.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -382,15 +432,17 @@ export default function ProductDetailPage() {
                   size="sm"
                   variant="ghost"
                   className="flex-1 border border-muted hover:bg-muted/50"
+                  onClick={() => product && addToWishlist(product)}
                 >
-                  <Heart className="h-4 w-4 mr-2" />
-                  Add to Wishlist
+                  <Heart className={`h-4 w-4 mr-2 ${product && isInWishlist(product.id) ? 'fill-red-500 text-red-500' : ''}`} />
+                  {product && isInWishlist(product.id) ? 'In Wishlist' : 'Add to Wishlist'}
                 </Button>
                 
                 <Button
                   size="sm"
                   variant="ghost"
                   className="flex-1 border border-muted hover:bg-muted/50"
+                  onClick={handleShare}
                 >
                   <Share2 className="h-4 w-4 mr-2" />
                   Share Product
