@@ -37,9 +37,6 @@ import Image from "next/image";
 
 const navigationItems = [
   { name: "Home", href: "/" },
-  { name: "New Arrivals", href: "/category/new-arrivals" },
-  { name: "Best Sellers", href: "/category/best-sellers" },
-  { name: "Sale", href: "/category/sale" },
   { name: "About", href: "/about" },
 ];
 
