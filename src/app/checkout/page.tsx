@@ -48,7 +48,7 @@ function CheckoutPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const productId = searchParams.get("product");
-  
+
   const { items, clearCart, getItemTotal } = useCart();
   const { token, isAuthenticated, user } = useAuth();
 
@@ -59,7 +59,7 @@ function CheckoutPageInner() {
   const [orderCompleted, setOrderCompleted] = useState(false);
 
   // Check if this is a single product checkout
-  const checkoutItems = productId 
+  const checkoutItems = productId
     ? items.filter(item => item.product.id === parseInt(productId))
     : items;
 
@@ -84,33 +84,34 @@ function CheckoutPageInner() {
       return;
     }
 
-    if (checkoutItems.length === 0) {
+    if (checkoutItems.length === 0 && !orderCompleted) {
       router.push("/cart");
       return;
     }
-  }, [isAuthenticated, checkoutItems.length, router]);
+  }, [isAuthenticated, checkoutItems.length, orderCompleted, router]);
 
-    // Phone number formatting function
+
+  // Phone number formatting function
   const formatPhoneNumber = (phone: string) => {
     // Remove all non-digits
     const digits = phone.replace(/\D/g, '');
-    
+
     // If it starts with 977, remove country code to fit 10 char limit
     if (digits.startsWith('977') && digits.length > 10) {
       return digits.substring(3); // Remove country code
     }
-    
+
     // If it's longer than 10 digits, take last 10
     if (digits.length > 10) {
       return digits.substring(digits.length - 10);
     }
-    
+
     return digits;
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formatted = formatPhoneNumber(e.target.value);
-    setBillingData({...billingData, phone_number: formatted});
+    setBillingData({ ...billingData, phone_number: formatted });
   };
 
   const handleBillingSubmit = async (e: React.FormEvent) => {
@@ -171,7 +172,7 @@ function CheckoutPageInner() {
         const canvas = document.createElement('canvas');
         canvas.width = 1;
         canvas.height = 1;
-        
+
         // Wait for blob creation and ensure we have a file
         await new Promise<void>((resolve) => {
           canvas.toBlob((blob) => {
@@ -221,7 +222,9 @@ function CheckoutPageInner() {
         setOrderId(response.order.id.toString());
         setOrderCompleted(true);
 
+
         // Clear cart items that were ordered (but after setting order completed)
+        router.push("/orders");
         if (!productId) {
           clearCart();
         }
@@ -293,7 +296,7 @@ function CheckoutPageInner() {
             {steps.map((step, index) => {
               const Icon = step.icon;
               const isActive = step.id === currentStep;
-              const isCompleted = 
+              const isCompleted =
                 (currentStep === "payment" && step.id === "billing") ||
                 (currentStep === "confirmation" && (step.id === "billing" || step.id === "payment"));
 
@@ -301,9 +304,9 @@ function CheckoutPageInner() {
                 <div key={step.id} className="flex items-center">
                   <div className={cn(
                     "flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all",
-                    isCompleted 
+                    isCompleted
                       ? "bg-green-500 border-green-500 text-white"
-                      : isActive 
+                      : isActive
                         ? "bg-primary border-primary text-white"
                         : "border-muted-foreground/30 text-muted-foreground"
                   )}>
@@ -357,7 +360,7 @@ function CheckoutPageInner() {
                           id="full_name"
                           type="text"
                           value={billingData.full_name}
-                          onChange={(e) => setBillingData({...billingData, full_name: e.target.value})}
+                          onChange={(e) => setBillingData({ ...billingData, full_name: e.target.value })}
                           placeholder="Enter your full name"
                           required
                           className="mt-1"
@@ -372,7 +375,7 @@ function CheckoutPageInner() {
                           id="email"
                           type="email"
                           value={billingData.email}
-                          onChange={(e) => setBillingData({...billingData, email: e.target.value})}
+                          onChange={(e) => setBillingData({ ...billingData, email: e.target.value })}
                           placeholder="Enter your email"
                           required
                           className="mt-1"
@@ -408,7 +411,7 @@ function CheckoutPageInner() {
                       <Textarea
                         id="shipping_address"
                         value={billingData.shipping_address}
-                        onChange={(e) => setBillingData({...billingData, shipping_address: e.target.value})}
+                        onChange={(e) => setBillingData({ ...billingData, shipping_address: e.target.value })}
                         placeholder="Enter your complete shipping address"
                         required
                         className="mt-1"
@@ -426,7 +429,7 @@ function CheckoutPageInner() {
                           id="city"
                           type="text"
                           value={billingData.city}
-                          onChange={(e) => setBillingData({...billingData, city: e.target.value})}
+                          onChange={(e) => setBillingData({ ...billingData, city: e.target.value })}
                           placeholder="Enter your city"
                           required
                           className="mt-1"
@@ -438,7 +441,7 @@ function CheckoutPageInner() {
                           id="postal_code"
                           type="text"
                           value={billingData.postal_code}
-                          onChange={(e) => setBillingData({...billingData, postal_code: e.target.value})}
+                          onChange={(e) => setBillingData({ ...billingData, postal_code: e.target.value })}
                           placeholder="Enter postal code"
                           className="mt-1"
                         />
@@ -450,15 +453,15 @@ function CheckoutPageInner() {
                       <Textarea
                         id="notes"
                         value={billingData.notes}
-                        onChange={(e) => setBillingData({...billingData, notes: e.target.value})}
+                        onChange={(e) => setBillingData({ ...billingData, notes: e.target.value })}
                         placeholder="Any special instructions for your order..."
                         className="mt-1"
                         rows={3}
                       />
                     </div>
 
-                    <Button 
-                      type="submit" 
+                    <Button
+                      type="submit"
                       className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
                     >
                       Continue to Payment
@@ -520,13 +523,13 @@ function CheckoutPageInner() {
                             Scan the QR code below with your mobile banking app or digital wallet to complete the payment.
                           </AlertDescription>
                         </Alert>
-                        
+
                         {/* QR Code Display */}
                         <div className="flex justify-center p-6 bg-muted/30 rounded-lg border-2 border-dashed">
                           <div className="text-center">
                             <div className="w-48 h-48 bg-white rounded-lg border-2 border-gray-200 flex items-center justify-center mb-4">
-                              <Image 
-                                src="/qr.jpg" 
+                              <Image
+                                src="/qr.jpg"
                                 alt="Payment QR Code"
                                 width={180}
                                 height={180}
@@ -578,16 +581,16 @@ function CheckoutPageInner() {
                     )}
 
                     <div className="flex gap-3">
-                      <Button 
-                        type="button" 
-                        variant="outline" 
+                      <Button
+                        type="button"
+                        variant="outline"
                         onClick={() => setCurrentStep("billing")}
                         className="flex-1"
                       >
                         Back to Billing
                       </Button>
-                      <Button 
-                        type="submit" 
+                      <Button
+                        type="submit"
                         disabled={isProcessing}
                         className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700"
                       >
@@ -686,7 +689,7 @@ function CheckoutPageInner() {
                 })}
 
                 <Separator />
-                
+
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span>Subtotal:</span>

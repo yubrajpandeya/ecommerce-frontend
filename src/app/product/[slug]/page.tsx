@@ -81,8 +81,8 @@ export default function ProductDetailPage() {
         setProduct(productData);
         setSelectedImage(
           fixImageUrl(productData.image_url) ||
-            fixImageUrl(productData.images?.[0]?.url) ||
-            "/placeholder.svg"
+          fixImageUrl(productData.images?.[0]?.url) ||
+          "/placeholder.svg"
         );
       } catch (error) {
         setError(
@@ -106,7 +106,7 @@ export default function ProductDetailPage() {
           <div className="mb-8">
             <Skeleton className="h-4 w-64" />
           </div>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Image Section Skeleton */}
             <div className="space-y-4">
@@ -117,7 +117,7 @@ export default function ProductDetailPage() {
                 ))}
               </div>
             </div>
-            
+
             {/* Product Info Skeleton */}
             <div className="space-y-6">
               <div className="space-y-4">
@@ -128,18 +128,18 @@ export default function ProductDetailPage() {
                 </div>
                 <Skeleton className="h-10 w-48" />
               </div>
-              
+
               <div className="space-y-3">
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-5/6" />
                 <Skeleton className="h-4 w-4/5" />
               </div>
-              
+
               <div className="space-y-3">
                 <Skeleton className="h-12 w-full" />
                 <Skeleton className="h-12 w-full" />
               </div>
-              
+
               <Skeleton className="h-32 w-full" />
             </div>
           </div>
@@ -215,7 +215,7 @@ export default function ProductDetailPage() {
                   </Badge>
                 </div>
               )}
-              
+
               <Image
                 src={selectedImage}
                 alt={product.name}
@@ -257,7 +257,7 @@ export default function ProductDetailPage() {
           <div className="space-y-6">
             <div>
               <h1 className="text-2xl lg:text-3xl font-bold mb-3 text-foreground">{product.name}</h1>
-              
+
               {/* Badges */}
               <div className="flex items-center gap-2 mb-4 flex-wrap">
                 {isUpcoming && (
@@ -333,10 +333,11 @@ export default function ProductDetailPage() {
             {/* Description */}
             <div className="bg-muted/20 p-4 rounded-lg">
               <h3 className="font-semibold mb-3 text-foreground">Product Description</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                {product.description ||
-                  "This is a high-quality product carefully selected for our customers. We ensure all our products meet the highest standards of quality and value."}
-              </p>
+              <div className="text-muted-foreground leading-relaxed" dangerouslySetInnerHTML={{
+                __html:
+                  product.description || "This is a high-quality product carefully selected for our customers. We ensure all our products meet the highest standards of quality and value."
+              }}>
+              </div>
             </div>
 
             {/* Product Details */}
@@ -406,10 +407,10 @@ export default function ProductDetailPage() {
                   {isUpcoming
                     ? "Coming Soon"
                     : isOutOfStock
-                    ? "Out of Stock"
-                    : "Buy Now"}
+                      ? "Out of Stock"
+                      : "Buy Now"}
                 </Button>
-                
+
                 <Button
                   size="lg"
                   variant="outline"
@@ -437,7 +438,7 @@ export default function ProductDetailPage() {
                   <Heart className={`h-4 w-4 mr-2 ${product && isInWishlist(product.id) ? 'fill-red-500 text-red-500' : ''}`} />
                   {product && isInWishlist(product.id) ? 'In Wishlist' : 'Add to Wishlist'}
                 </Button>
-                
+
                 <Button
                   size="sm"
                   variant="ghost"
@@ -454,13 +455,13 @@ export default function ProductDetailPage() {
                 <div className="flex items-center gap-2 p-3 bg-muted/20 rounded-lg">
                   <div className={cn(
                     "w-3 h-3 rounded-full",
-                    isOutOfStock ? "bg-red-500" : 
-                    product.stock < 10 ? "bg-yellow-500" : "bg-green-500"
+                    isOutOfStock ? "bg-red-500" :
+                      product.stock < 10 ? "bg-yellow-500" : "bg-green-500"
                   )}></div>
                   <span className="text-sm font-medium">
-                    {isOutOfStock ? "Currently out of stock" : 
-                     product.stock < 10 ? `Only ${product.stock} left in stock - order soon!` : 
-                     `${product.stock} items available`}
+                    {isOutOfStock ? "Currently out of stock" :
+                      product.stock < 10 ? `Only ${product.stock} left in stock - order soon!` :
+                        `${product.stock} items available`}
                   </span>
                 </div>
               )}

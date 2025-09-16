@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -33,17 +33,36 @@ import { useAuth } from "@/lib/auth-context";
 import { useCart } from "@/lib/cart-context";
 import { useWishlist } from "@/lib/wishlist-context";
 import Image from "next/image";
+import { api, Category } from "@/lib/api";
 
-const navigationItems = [
-  { name: "Home", href: "/" },
-  { name: "Fashion", href: "/category/fashion" },
-  { name: "Electronics", href: "/category/electronics" },
-  { name: "Furniture", href: "/category/furniture" },
-  { name: "Stationary", href: "/category/stationary" },
-  { name: "About", href: "/about" },
-];
 
 export function Header() {
+
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await api.getCategories();
+        setCategories(data);
+      } catch (err) {
+        console.error("Failed to fetch categories:", err);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+
+  const navigationItems = [
+    { name: "Home", href: "/" },
+    ...categories.map((cat) => ({
+      name: cat.name,
+      href: `/category/${cat.slug}`,
+    })),
+    { name: "About", href: "/about" },
+  ];
+
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuth();
   const { totalItems } = useCart();
@@ -62,7 +81,7 @@ export function Header() {
 
   return (
     <header className="bg-gradient-to-r from-slate-900 via-[#087998] to-cyan-900 text-white sticky top-0 z-50 shadow-2xl backdrop-blur-sm border-b border-cyan-800/50 hover-glow-teal">
-    
+
 
       {/* Top utility bar */}
       <div className="border-b border-slate-700/30 hidden lg:block bg-slate-800/50">
@@ -100,105 +119,105 @@ export function Header() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent 
-              side="left" 
+            <SheetContent
+              side="left"
               className="w-80 bg-white border-slate-200 flex flex-col h-full max-h-screen"
             >
               <SheetTitle className="sr-only">Mobile Navigation Menu</SheetTitle>
               <div className="flex-1 overflow-y-auto overscroll-contain">
                 <div className="flex flex-col gap-6 mt-8 pb-6 px-1 ml-1.5">
-                {/* Mobile user section */}
-                <div className="flex flex-col gap-3 pb-6 border-b border-slate-200">
-                  {isAuthenticated ? (
-                    <>
-                      <div className="flex items-center gap-3 p-3 bg-slate-100 rounded-xl">
-                        <Avatar className="h-10 w-10 border-2 border-blue-500">
-                          <AvatarFallback className="gradient-teal-primary text-white font-semibold">
-                            {user?.name?.charAt(0)?.toUpperCase() || "U"}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-semibold text-slate-900">{user?.name}</p>
-                          <p className="text-xs text-slate-600">Premium Member</p>
+                  {/* Mobile user section */}
+                  <div className="flex flex-col gap-3 pb-6 border-b border-slate-200">
+                    {isAuthenticated ? (
+                      <>
+                        <div className="flex items-center gap-3 p-3 bg-slate-100 rounded-xl">
+                          <Avatar className="h-10 w-10 border-2 border-blue-500">
+                            <AvatarFallback className="gradient-teal-primary text-white font-semibold">
+                              {user?.name?.charAt(0)?.toUpperCase() || "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-semibold text-slate-900">{user?.name}</p>
+                            <p className="text-xs text-slate-600">Premium Member</p>
+                          </div>
                         </div>
-                      </div>
-                      <Link
-                        href="/profile"
-                        className="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl transition-colors group"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <Settings className="h-5 w-5 text-slate-600 group-hover:text-blue-600" />
-                        <span className="text-slate-900 group-hover:text-blue-600">Profile Settings</span>
-                      </Link>
-                      <Link
-                        href="/orders"
-                        className="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl transition-colors group"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <Package className="h-5 w-5 text-slate-600 group-hover:text-blue-600" />
-                        <span className="text-slate-900 group-hover:text-blue-600">My Orders</span>
-                      </Link>
-                      <Link
-                        href="/cart"
-                        className="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl transition-colors group"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <ShoppingCart className="h-5 w-5 text-slate-600 group-hover:text-blue-600" />
-                        <span className="text-slate-900 group-hover:text-blue-600">Shopping Cart</span>
-                        {totalItems > 0 && (
-                          <Badge className="ml-auto gradient-teal-primary">
-                            {totalItems}
-                          </Badge>
-                        )}
-                      </Link>
-                      <button
-                        onClick={() => {
-                          logout();
-                          setIsMobileMenuOpen(false);
-                          router.push("/");
-                        }}
-                        className="flex items-center gap-3 p-3 hover:bg-red-50 rounded-xl transition-colors group w-full text-left"
-                      >
-                        <LogOut className="h-5 w-5 text-slate-600 group-hover:text-red-600" />
-                        <span className="text-slate-900 group-hover:text-red-600">Sign Out</span>
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <Link
-                        href="/login"
-                        className="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl transition-colors group"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <User className="h-5 w-5 text-slate-600 group-hover:text-blue-600" />
-                        <span className="text-slate-900 group-hover:text-blue-600">Sign In</span>
-                      </Link>
-                      <Link
-                        href="/register"
-                        className="flex items-center gap-3 p-3 bg-gradient-to-r from-slate-900 via-[#087998] to-cyan-900 rounded-xl transition-colors"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <User className="h-5 w-5 text-white" />
-                        <span className="text-white font-medium">Create Account</span>
-                      </Link>
-                    </>
-                  )}
-                </div>
+                        <Link
+                          href="/profile"
+                          className="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl transition-colors group"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <Settings className="h-5 w-5 text-slate-600 group-hover:text-blue-600" />
+                          <span className="text-slate-900 group-hover:text-blue-600">Profile Settings</span>
+                        </Link>
+                        <Link
+                          href="/orders"
+                          className="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl transition-colors group"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <Package className="h-5 w-5 text-slate-600 group-hover:text-blue-600" />
+                          <span className="text-slate-900 group-hover:text-blue-600">My Orders</span>
+                        </Link>
+                        <Link
+                          href="/cart"
+                          className="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl transition-colors group"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <ShoppingCart className="h-5 w-5 text-slate-600 group-hover:text-blue-600" />
+                          <span className="text-slate-900 group-hover:text-blue-600">Shopping Cart</span>
+                          {totalItems > 0 && (
+                            <Badge className="ml-auto gradient-teal-primary">
+                              {totalItems}
+                            </Badge>
+                          )}
+                        </Link>
+                        <button
+                          onClick={() => {
+                            logout();
+                            setIsMobileMenuOpen(false);
+                            router.push("/");
+                          }}
+                          className="flex items-center gap-3 p-3 hover:bg-red-50 rounded-xl transition-colors group w-full text-left"
+                        >
+                          <LogOut className="h-5 w-5 text-slate-600 group-hover:text-red-600" />
+                          <span className="text-slate-900 group-hover:text-red-600">Sign Out</span>
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <Link
+                          href="/login"
+                          className="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl transition-colors group"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <User className="h-5 w-5 text-slate-600 group-hover:text-blue-600" />
+                          <span className="text-slate-900 group-hover:text-blue-600">Sign In</span>
+                        </Link>
+                        <Link
+                          href="/register"
+                          className="flex items-center gap-3 p-3 bg-gradient-to-r from-slate-900 via-[#087998] to-cyan-900 rounded-xl transition-colors"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <User className="h-5 w-5 text-white" />
+                          <span className="text-white font-medium">Create Account</span>
+                        </Link>
+                      </>
+                    )}
+                  </div>
 
-                {/* Mobile navigation */}
-                <div className="flex flex-col gap-2">
-                  <h3 className="font-semibold text-sm text-slate-600 mb-3 uppercase tracking-wider">Navigation</h3>
-                  {navigationItems.map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      className="p-3 hover:bg-slate-50 rounded-xl font-medium text-slate-900 hover:text-blue-600 transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
+                  {/* Mobile navigation */}
+                  <div className="flex flex-col gap-2">
+                    <h3 className="font-semibold text-sm text-slate-600 mb-3 uppercase tracking-wider">Navigation</h3>
+                    {navigationItems.map((item) => (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        className="p-3 hover:bg-slate-50 rounded-xl font-medium text-slate-900 hover:text-blue-600 transition-colors"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </div>
             </SheetContent>
@@ -301,21 +320,21 @@ export function Header() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 bg-slate-900 border-slate-700">
-                  <DropdownMenuItem 
+                  <DropdownMenuItem
                     onClick={() => router.push("/profile")}
                     className="text-white hover:bg-slate-800 focus:bg-slate-800"
                   >
                     <Settings className="mr-2 h-4 w-4" />
                     Profile Settings
                   </DropdownMenuItem>
-                  <DropdownMenuItem 
+                  <DropdownMenuItem
                     onClick={() => router.push("/orders")}
                     className="text-white hover:bg-slate-800 focus:bg-slate-800"
                   >
                     <Package className="mr-2 h-4 w-4" />
                     My Orders
                   </DropdownMenuItem>
-                  <DropdownMenuItem 
+                  <DropdownMenuItem
                     className="text-white hover:bg-slate-800 focus:bg-slate-800"
                   >
                     <Bell className="mr-2 h-4 w-4" />

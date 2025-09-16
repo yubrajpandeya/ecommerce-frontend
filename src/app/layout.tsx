@@ -22,6 +22,27 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Choose Your Cart",
   description: "Ecommerce",
+  openGraph: {
+    title: "Choose Your Cart",
+    description: "Ecommerce",
+    url: "https://chooseyourcart.com", 
+    siteName: "Choose Your Cart",
+    images: [
+      {
+        url: "https://chooseyourcart.com/logo.png",
+        width: 800,
+        height: 600,
+        alt: "Choose Your Cart",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Choose Your Cart",
+    description: "Ecommerce",
+    images: ["https://chooseyourcart.com/logo.png"],
+  },
 };
 
 export default function RootLayout({
