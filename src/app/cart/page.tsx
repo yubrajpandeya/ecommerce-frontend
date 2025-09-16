@@ -72,7 +72,7 @@ export default function CartPage() {
               </Link>
             </Button>
             <Button asChild variant="outline">
-              <Link href="/category">Browse Categories</Link>
+              <Link href="/orders">My Orders</Link>
             </Button>
           </div>
         </div>
